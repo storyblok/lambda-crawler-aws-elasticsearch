@@ -4,26 +4,24 @@ var fetch = null
 var baseUrl = ''
 var tentant = 'default'
 var urls = []
-
-var client = require('./client')
+var es = require('./client')
 
 cheerio.setBrowser('chrome')
 
-fetch = function (currentUrl) {
+fetch = function(currentUrl) {
   urls.push(currentUrl)
-  cheerio.fetch(currentUrl, function (err, $, res) {
+  cheerio.fetch(currentUrl, function(err, $, res) {
     if (typeof $ === 'undefined') {
       return
     }
 
-    var summary = {}
-
-    var getText = function () {
+    var getText = function() {
       if ($(this).text().length > 0) {
         return $(this).text()
       }
     }
 
+    var summary = {}
     var attributes = {
       url: currentUrl,
       title: $('title').text(),
@@ -46,10 +44,10 @@ fetch = function (currentUrl) {
 
     var links = $('a')
 
-    links.map(function () {
+    links.map(function() {
       var href = $(this).attr('href')
 
-      if (href && href != currentUrl && !href.startsWith('//') && (href.startsWith(baseUrl) || href.startsWith('/'))) {
+      if (href && href != currentUrl && !href.startsWith('//') && (href.startsWith(baseUrl) || href.startsWith('/'))){
         if (href.startsWith('/')) {
           href = baseUrl + href
         }
@@ -60,23 +58,30 @@ fetch = function (currentUrl) {
       return false
     })
 
-    console.log(currentUrl)
-    console.log(toString.call(summary) === '[object Object]')
+    console.log(currentUrl + ' crawled')
 
-    client.index({
+    es.index({
       index: tentant,
       type: 'pages',
       id: md5(tentant) + md5(currentUrl),
       body: summary
     }, function (err, resp, status) {
-      console.log(resp, err, status)
+      if (err) {
+        console.log(err)
+      }
     })
   })
 }
 
-var crawl = function (event, context) {
+var crawl = function(event, context) {
+  console.log(event)
   baseUrl = event.url
   tentant = event.tentant
+
+  if (!baseUrl || !tentant) {
+    return
+  }
+
   fetch(event.url)
 }
 
