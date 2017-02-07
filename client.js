@@ -9,3 +9,11 @@ module.exports = require('elasticsearch').Client({
     credentials: awsCredentials
   }
 })
+
+// Or use
+// amazonES: {
+//   region: 'us-east-1',
+//   accessKey: 'xxx',
+//   secretKey: 'xxx'
+// }
+    

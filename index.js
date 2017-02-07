@@ -58,7 +58,7 @@ fetch = function(currentUrl) {
       return false
     })
 
-    console.log(currentUrl + ' crawled')
+    console.log('CRAWLED: ' + currentUrl)
 
     es.index({
       index: tentant,
@@ -68,6 +68,8 @@ fetch = function(currentUrl) {
     }, function (err, resp, status) {
       if (err) {
         console.log(err)
+      } else {
+        console.log('ADDED to index: ' + summary.url)
       }
     })
   })
