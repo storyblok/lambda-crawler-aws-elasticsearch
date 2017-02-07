@@ -12,6 +12,7 @@
   "dependencies": {
     "cheerio-httpcli": "^0.3.2",
     "crawler": "^1.0.2",
-    "aws-es": "^1.5.3"
+    "aws-es": "^1.5.3",
+    "md5": "^2.2.1"
   }
 }

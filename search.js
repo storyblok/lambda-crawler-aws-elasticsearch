@@ -2,8 +2,8 @@ var client = require('./client')
 
 client.search({
   index: 'storyblok',
-  type: 'website',
-  body: { }
+  type: 'pages',
+  body: {}
 }, function (error, response, status) {
   if (error) {
     console.log("search error: " + error)

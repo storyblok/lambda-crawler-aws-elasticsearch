@@ -1,4 +1,5 @@
 var cheerio = require('cheerio-httpcli')
+var md5 = require('md5')
 var fetch = null
 var baseUrl = ''
 var tentant = 'default'
@@ -15,9 +16,7 @@ fetch = function (currentUrl) {
       return
     }
 
-    var summary = {
-      Id: currentUrl
-    }
+    var summary = {}
 
     var getText = function () {
       if ($(this).text().length > 0) {
@@ -26,6 +25,7 @@ fetch = function (currentUrl) {
     }
 
     var attributes = {
+      url: currentUrl,
       title: $('title').text(),
       description: $('meta[name="description"]').attr('content'),
       keywords: $('meta[name="keywords"]').attr('content'),
@@ -61,13 +61,15 @@ fetch = function (currentUrl) {
     })
 
     console.log(currentUrl)
+    console.log(toString.call(summary) === '[object Object]')
 
     client.index({
       index: tentant,
       type: 'pages',
-      body: JSON.stringify(summary)
+      id: md5(currentUrl),
+      body: summary
     }, function (err, resp, status) {
-      console.log(resp, err, status);
+      console.log(resp, err, status)
     })
   })
 }
@@ -75,15 +77,6 @@ fetch = function (currentUrl) {
 var crawl = function (event, context) {
   baseUrl = event.url
   tentant = event.tentant
-  client.ping({
-    requestTimeout: 30000,
-  }, function (error) {
-    if (error) {
-      console.error('elasticsearch cluster is down!');
-    } else {
-      console.log('All is well');
-    }
-  });
   fetch(event.url)
 }
 
