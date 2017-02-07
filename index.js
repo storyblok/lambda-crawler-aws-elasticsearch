@@ -66,7 +66,7 @@ fetch = function (currentUrl) {
     client.index({
       index: tentant,
       type: 'pages',
-      id: md5(currentUrl),
+      id: md5(tentant) + md5(currentUrl),
       body: summary
     }, function (err, resp, status) {
       console.log(resp, err, status)
