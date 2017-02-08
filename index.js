@@ -2,7 +2,7 @@ var cheerio = require('cheerio-httpcli')
 var md5 = require('md5')
 var fetch = null
 var baseUrl = ''
-var tentant = 'default'
+var tenant = 'default'
 var urls = []
 var es = require('./client')
 
@@ -33,7 +33,7 @@ fetch = function(currentUrl) {
       h4: $('h4').map(getText).get(),
       h5: $('h5').map(getText).get(),
       content: $('p').map(getText).get(),
-      tentant: tentant
+      tenant: tenant
     }
 
     for (item in attributes) {
@@ -61,9 +61,9 @@ fetch = function(currentUrl) {
     console.log('CRAWLED: ' + currentUrl)
 
     es.index({
-      index: tentant,
+      index: tenant,
       type: 'pages',
-      id: md5(tentant) + md5(currentUrl),
+      id: md5(tenant) + md5(currentUrl),
       body: summary
     }, function (err, resp, status) {
       if (err) {
@@ -78,9 +78,9 @@ fetch = function(currentUrl) {
 var crawl = function(event, context) {
   console.log(event)
   baseUrl = event.url
-  tentant = event.tentant
+  tenant = event.tenant
 
-  if (!baseUrl || !tentant) {
+  if (!baseUrl || !tenant) {
     return
   }
 

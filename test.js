@@ -1,3 +1,3 @@
 var crawler = require('./index')
 
-crawler.handler({ url: 'https://www.storyblok.com', tentant: 'storyblok' })
+crawler.handler({ url: 'https://www.storyblok.com', tenant: 'storyblok' })
